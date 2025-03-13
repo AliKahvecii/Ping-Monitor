@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ping İzleme</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .status-box {
+            padding: 4px;
+            border-radius: 5px;
+            margin: 3px;
+            width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex-direction: column; /* Allow text to stack vertically */
+        }
+        .online {
+            background-color: #28a745;
+            color: white;
+        }
+        .offline {
+            background-color: #dc3545;
+            color: white;
+        }
+        #statusContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 4px;
+            justify-content: center;
+            height: auto;
+            max-height: none;
+            align-items: center;
+        }
+    </style>
+    <script>
+        // Custom messages for each IP
+        const customMessages = {
+            "192.168.2.1": "Ana router aktif",
+            "192.168.2.2": "Giriş noktası çalışıyor",
+            "192.168.2.3": "Depo sunucusu bağlantıda",
+            // Add more IP-specific messages here
+        };
+
+        async function fetchStatus() {
+    const response = await fetch('/status');
+    if (!response.ok) {
+        console.error('Failed to fetch status:', response.status);
+        return;
+    }
+    const data = await response.json();
+    const container = document.getElementById('statusContainer');
+    container.innerHTML = ''; // Önceki içeriği temizle
+
+    for (let i = 1; i <= 150; i++) {
+        const ip = `192.168.2.${i}`;
+
+        // 192.168.2.1'i atla
+        if (
+    ip === "192.168.2.2" || ip === "192.168.2.86" || ip === "192.168.2.88" || 
+    ip === "192.168.2.89" || ip === "192.168.2.91" || ip === "192.168.2.92" || 
+    ip === "192.168.2.93" || ip === "192.168.2.94" || ip === "192.168.2.97" || 
+    ip === "192.168.2.102" || ip === "192.168.2.103" || ip === "192.168.2.104" || 
+    ip === "192.168.2.106" || ip === "192.168.2.107" || ip === "192.168.2.108" || 
+    ip === "192.168.2.109" || ip === "192.168.2.110" || ip === "192.168.2.111" || 
+    ip === "192.168.2.112" || ip === "192.168.2.113" || ip === "192.168.2.114" || 
+    ip === "192.168.2.115" || ip === "192.168.2.116" || ip === "192.168.2.117" || 
+    ip === "192.168.2.118" || ip === "192.168.2.119" || ip === "192.168.2.121" || 
+    ip === "192.168.2.122" || ip === "192.168.2.123" || ip === "192.168.2.124" || 
+    ip === "192.168.2.125" || ip === "192.168.2.126" || ip === "192.168.2.127" || 
+    ip === "192.168.2.128" || ip === "192.168.2.129" || ip === "192.168.2.130" || 
+    ip === "192.168.2.131" || ip === "192.168.2.133" || ip === "192.168.2.134" || 
+    ip === "192.168.2.135" || ip === "192.168.2.136" || ip === "192.168.2.137" || 
+    ip === "192.168.2.138" || ip === "192.168.2.139" || ip === "192.168.2.140" || 
+    ip === "192.168.2.141" || ip === "192.168.2.142" || ip === "192.168.2.143" || 
+    ip === "192.168.2.144" || ip === "192.168.2.145" || ip === "192.168.2.146" || 
+    ip === "192.168.2.147" || ip === "192.168.2.148" || ip === "192.168.2.149" || 
+    ip === "192.168.2.150"
+) continue;
+
+
+
+        const statusClass = data[ip] ? 'online' : 'offline';
+        const message = customMessages[ip] || "Durum bilgisi yok";
+
+        const statusDiv = document.createElement('div');
+        statusDiv.className = `status-box ${statusClass}`;
+        statusDiv.innerHTML = `${ip}<br>${data[ip] ? 'Çevrimiçi' : 'Çevrimdışı'}<br><small>${message}</small>`;
+
+        container.appendChild(statusDiv);
+    }
+}
+
+        // Update the statuses every 10 seconds
+        setInterval(fetchStatus, 5000);
+
+        // Fetch the data when the page loads
+        window.onload = fetchStatus;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4 text-primary">IP Ping İzleme</h1>
+        <div id="statusContainer"></div> <!-- Grid layout for status boxes -->
+    </div>
+</body>
+</html>
